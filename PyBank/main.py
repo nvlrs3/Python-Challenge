@@ -11,19 +11,21 @@ with open(budget_csv) as csv_file:
 
     # Read the header row first
     csv_header = next(csv_file)
-    print(f"Header: {csv_header}")
 
+    # Establish necessary variables
     Count = 0
     Total = 0
     PriorRow = []
     CurrentRow = []
 
+    # Iterate through the rows in the CSV
     for row in csv_reader:
         Count = Count + 1
         Total = int(row[1]) + Total
         PriorRow.append(row[1])
         CurrentRow.append(row[1])
 
+    # Start the building blocks for the average change.
     PriorRow_Index = range(0, len(PriorRow)-1)
     PriorRow_List = list(PriorRow_Index)
     PriorRow_Value = []
@@ -38,33 +40,41 @@ with open(budget_csv) as csv_file:
     for index in CurrentRow_List:
         CurrentRow_Value.append(CurrentRow[index])
 
-#Change = CurrentRow_Value - PriorRow_Value
+    #Calculate the average change and iterate to find the corresponding dates.
+    TotalChange = 0
 
-#analysis_CSV = zip(PriorRow_Value, CurrentRow_Value)
+    for Value in range(0, len(CurrentRow_Value)):
+        Change = int(CurrentRow_Value[int(Value)]) - int(PriorRow_Value[int(Value)])
+        TotalChange = TotalChange + Total
+        AverageChange = TotalChange / (Count - 1)
+        GreatestIncrease = max(Change)
+        GreatestDecrease = min(Change)
+        if GreatestIncrease == csv_reader[1]:
+            GreatestIncreaseMonth = csv_reader[0]
+        elif GreatestDecrease == csv_reader[1]:
+            GreatestDecreaseMonth = csv_reader[0]
+        End if
 
-#with open(analysis_CSV) as csv_file:
-    #analysis_CSV = csv.reader(csv_file, delimiter=",")
-    
-#analysis_file = os.path.join("analysis.csv")
-    #for value in analysis_CSV:
-        #Change = int(CurrentRow_Value[int(value),1]) - int(PriorRow_Value[int(value),0])
-        #TotalChange = TotalChange + Change
+# Output to the terminal.
+print("Financial Analysis")
+print("-------------------------------")
+print("Total Months: " & Count)
+print("Total: $" & Total)
+print("Average Change: $" & AverageChange)
+print("Greatest Increase in Profits: " & GreatestIncreaseMonth & "($" & GreatestIncrease &")")
+print("Greatest Decrease in Profits:" & GreatestDecreaseMonth & "($" & GreatestDecrease &")")
 
-    #for Value in CurrentRow_Value:
-        #Change = int(CurrentRow_Value[int(Value)]) - int(PriorRow_Value[int(Value)])
-    
-    #Change = 0
-    # Total2 = 0
-    # CurrentChange = []
+# Output to text file.
+L1 = "Financial Analysis"
+L2 = "-------------------------------"
+L3 = "Total Months: " & Count
+L4 = "Total: $" & Total
+L5 = "Average Change: $" & AverageChange
+L6 = "Greatest Increase in Profits: " & GreatestIncreaseMonth & "($" & GreatestIncrease &")"
+L7 = "Greatest Decrease in Profits:" & GreatestDecreaseMonth & "($" & GreatestDecrease &")"
 
-    #for Current_Value in CurrentRow_Value:
-        #for Prior_Value in PriorRow_Value:
-            #Change = int(CurrentRow_Value[int(Current_Value)]) - int(PriorRow_Value[int(Prior_Value)])
-            
-
-print(Count)
-print(Total)
-print(len(CurrentRow_Value))
-print(len(PriorRow_Value))
-print(CurrentRow_Value[84])
-#print(Change)
+lines= [L1, L2, L3, L4, L5, L6, L7] 
+with open("Output", w) as f:
+    for line in lines:
+        f.write(line)
+        f.write("\n")
